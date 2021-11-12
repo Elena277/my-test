@@ -1,0 +1,108 @@
+field = [[" "]*3 for i in range(3)]
+
+
+def greeting():
+    print("**********************")
+    print("   Приветствуем вас   ")
+    print("        в игре        ")
+    print('   "Крестики-Нолики"  ')
+    print("**********************")
+    print("   формат ввода: х у  ")
+    print("   (через пробел!!!)  ")
+    print("   х - номер строки   ")
+    print("   у - номер столбца  ")
+    print("**********************")
+
+
+def show():
+    print("  | 0 | 1 | 2 |")
+    for i, row in enumerate(field):
+        print("---------------")
+        print(f"{i} | {' | '.join(row)} |")
+    print("---------------")
+
+
+def ask():
+    while True:
+        coord = input("Ваш ход:  ").split()
+
+        if len(coord) != 2:
+            print("Введите два числа через пробел!")
+            continue
+
+        x, y = coord
+
+        if not(x.isdigit()) or not(y.isdigit()):
+            print("Введите числа!")
+            continue
+
+        x, y = int(x), int(y)
+
+        if any((x < 0, x > 2, y < 0, y > 2)):
+            print("Координаты вне диапазона!")
+            continue
+
+        if field[x][y] != " ":
+            print("Клетка занята!")
+            continue
+        return x, y
+
+
+def check_win():
+    win_coord = [((0, 0), (0, 1), (0, 2)),
+                 ((1, 0), (1, 1), (1, 2)),
+                 ((2, 0), (2, 1), (2, 2)),
+                 ((0, 0), (1, 0), (2, 0)),
+                 ((0, 1), (1, 1), (2, 1)),
+                 ((0, 2), (1, 2), (2, 2)),
+                 ((0, 0), (1, 1), (2, 2)),
+                 ((2, 0), (1, 1), (0, 2))]
+    for coord in win_coord:
+        symbols = []
+        for c in coord:
+            symbols.append(field[c[0]][c[1]])
+        if symbols == ["X", "X", "X"]:
+            print()
+            print("Выиграл КРЕСТИК!")
+            return True
+        if symbols == ["O", "O", "O"]:
+            print()
+            print("Выиграл НОЛИК!")
+            return True
+    return False
+
+
+greeting()
+
+print()
+
+num_chod = 0
+
+while True:
+    num_chod += 1
+
+    show()
+
+    print()
+
+    if num_chod % 2 == 1:
+        print("Ходит крестик")
+    else:
+        print("Ходит нолик")
+
+    x, y = ask()
+
+    if num_chod % 2 == 1:
+        field[x][y] = "X"
+    else:
+        field[x][y] = "O"
+
+    if check_win():
+        print()
+        show()
+        break
+
+    if num_chod == 9:
+        show()
+        print("  НИЧЬЯ!!!  ")
+        break
